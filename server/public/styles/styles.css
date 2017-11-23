@@ -1,0 +1,27 @@
+body {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: white;
+    background-color: rgb(14, 14, 26);
+}
+
+th {
+    width: 200px;
+}
+
+h1 {
+    text-align: center;
+    padding: 25px;
+    background-color: rgb(88, 118, 119);
+    margin: -10px;
+}
+
+#newTaskForm {
+    padding: 20px;
+}
+
+td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    background-color: lightslategray;
+    color: black; 
+}

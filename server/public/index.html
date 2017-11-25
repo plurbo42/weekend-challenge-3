@@ -14,14 +14,14 @@
 <body>
     <h1>To Do</h1>
     <div id="incompleteTasks"></div>
-    <h4>New Task</h4>
-    <form action="submitNewTask" id="newTaskForm">
-        <input type="text" placeholder="Task">
-        <input type="text" placeholder="Task Type">
-        <input type="text" placeholder="Priority">
-        <input type="text" placeholder="Detail">
-        <input type="date" placeholder="Start Date">
-        <input type="date" placeholder="Due Date">
+    <h4>New Task</h4><button id="showNewTask"></button>
+    <form id="addTask">
+        <input type="text" id="taskIn" placeholder="Task">
+        <input type="text" id="typeIn" placeholder="Task Type">
+        <input type="text" id="priorityIn" placeholder="Priority">
+        <!-- <input type="text" placeholder="Detail"> -->
+        <input type="date" id="startIn" placeholder="Start Date">
+        <input type="date" id="dueIn" placeholder="Due Date">
         <button id="newTaskButton">Add Task</button>
     </form>
     <table>
@@ -29,14 +29,12 @@
             <th>Task</th>
             <th>Type</th>
             <th>Priority</th>
-            <th>Detail</th>
             <th>Start Date</th>
             <th>Due Date</th>
             <th>Is Complete</th>
         </tr>
-        <tbody>
+        <tbody id="todoList">
           <tr>
-              <td>Sample</td>
               <td>Sample</td>
               <td>Sample</td>
               <td>Sample</td>

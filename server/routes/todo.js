@@ -44,7 +44,32 @@ router.get('/incomplete', function (req, res) {
 });
 
 
-
+router.post('/', function(req, res) {
+    console.log(req.body, 'is the posted array 1')   
+    var detail = req.body.detail;
+    var itemtype = req.body.itemtype;
+    var priority = req.body.priority;
+    var startdate = req.body.startdate;
+    var duedate = req.body.duedate;
+    console.log(req.body, 'is the posted array 2')
+    pool.connect(function (errorConnectingToDatabase, client, done) {
+        if(errorConnectingToDatabase) {
+            console.log('error connecting to database ', errorConnectingToDatabase);
+            res.sendStatus(500);
+        }else{
+            client.query(`INSERT INTO todo_item (detail, itemtype, priority, startdate, duedate, iscomplete) 
+            VALUES ($1, $2, $3, $4, $5, false)`, [detail, itemtype, priority, startdate, duedate], function(errorMakingQuery, result) {
+                done();
+                if(errorMakingQuery){
+                    console.log('query failed ', errorMakingQuery)
+                    res.sendStatus(500);
+                }else {
+                    res.sendStatus(200);
+                }
+            })
+        }
+    })
+})
 
 
 module.exports = router;

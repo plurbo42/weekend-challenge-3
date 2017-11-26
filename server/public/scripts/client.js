@@ -5,8 +5,11 @@ $(document).ready(onReady);
 function onReady() {
     console.log('jquery loaded');
     getList();
+    $('#addTask').hide();
     getCountIncomplete();
     $('#newTaskButton').on('click', addTask);
+    $('#showNewTask').on('click', showNewTask);
+    $('#todoList').on('click', '.markComplete', markComplete);
 };
 
 function getList() {
@@ -18,20 +21,20 @@ function getList() {
             appendList(response);
         }
     })
-}
-
+};
 
 function getCountIncomplete() {
     $.ajax({
         method: 'GET',
         url: '/todo/incomplete',
         success: function (response) {
+            $('#incompleteTasks').empty();
             $('#incompleteTasks').append('<h3>Incomplete Tasks: ' + response.count + '</h3>')
         }
     })
-}
+};
 
-function addTask(){
+function addTask() {
     console.log('in add task')
     $.ajax({
         method: 'POST',
@@ -43,20 +46,19 @@ function addTask(){
             startdate: $('#startIn').val(),
             duedate: $('#dueIn').val()
         },
-        success: function (response){
+        success: function (response) {
             console.log('successful post');
             getList();
+            //hide new task form and clear inputs
+            $('#addTask').hide();
+            $('#taskIn').val('');
+            $('#typeIn').val('');
+            $('#priorityIn').val('');
+            $('#startIn').val('');
+            $('#dueIn').val('');
         }
     })
-}
-
-// itemid SERIAL PRIMARY KEY,
-// itemtype VARCHAR(50),
-// priority VARCHAR(50),
-// detail VARCHAR(500) NOT NULL,
-// startdate DATE, 
-// duedate DATE,
-// iscomplete BOOLEAN NOT NULL
+};
 
 function appendList(array) {
     console.log('in appendList ', array);
@@ -66,7 +68,7 @@ function appendList(array) {
         //create data row
         var $todoLine = $('<tr class=todoRow></tr>');
         $todoLine.data('id', currentItem.itemid);
-    
+
         //append info to row
         var $todoDetail = $('<td class=detail>' + currentItem.detail + '</td>');
         $($todoLine).append($todoDetail);
@@ -83,13 +85,41 @@ function appendList(array) {
         var $todoDueDate = $('<td class=duedate>' + currentItem.duedate + '</td>');
         $($todoLine).append($todoDueDate);
 
-        var $todoIsComplete = $('<td class=iscomplete></td>');
-        $todoIsComplete.data('id', currentItem.id);
+        //add mark complete button to incomplete tasks
+        if (currentItem.iscomplete == false) {
+            var $todoIsComplete = $('<td class=iscomplete><button class="markComplete">Mark Complete</button></td>');
+        } else {
+            var $todoIsComplete = $('<td class=iscomplete></td>')
+        }
+        $todoIsComplete.data('id', currentItem.itemid);
         $todoIsComplete.data('iscomplete', currentItem.iscomplete);
         $($todoLine).append($todoIsComplete);
 
+        var $todoDelete = $('<td class=deleteTask><button class="deleteButton">Delete</button></td>');
+        $($todoLine).append($todoDelete);
+
         //append row to DOM
         $('#todoList').append($todoLine);
+
     }
 
-}
+};
+
+function showNewTask() {
+    console.log('in show new task');
+    $('#addTask').toggle();
+};
+
+function markComplete() {
+    var completeId = $(this).parent().data().id;
+    console.log('in markComplete for id ', completeId);
+    $.ajax({
+        method: 'PUT',
+        url: '/todo/' + completeId,
+        success: function (response) {
+            console.log('successful mark complete');
+            getList();
+            getCountIncomplete();
+        }
+    })
+};

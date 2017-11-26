@@ -61,7 +61,7 @@ router.post('/', function(req, res) {
             VALUES ($1, $2, $3, $4, $5, false)`, [detail, itemtype, priority, startdate, duedate], function(errorMakingQuery, result) {
                 done();
                 if(errorMakingQuery){
-                    console.log('query failed ', errorMakingQuery)
+                    console.log('query failed ', errorMakingQuery);
                     res.sendStatus(500);
                 }else {
                     res.sendStatus(200);
@@ -71,5 +71,23 @@ router.post('/', function(req, res) {
     })
 })
 
+router.put('/:id', function(req, res){
+    pool.connect(function (errorConnectingToDatabase, client, done){
+        if(errorConnectingToDatabase) {
+            console.log('error connecting to database ', errorConnectingToDatabase);
+            res.sendStatus(500);
+        }else{
+            client.query(`UPDATE todo_item SET iscomplete = true WHERE itemid = $1`, [req.params.id], function (errorMakingQuery, result){
+                done();
+                if(errorMakingQuery){
+                    console.log('query failed ', errorMakingQuery);
+                    res.sendStatus(500);
+                }else{
+                    res.sendStatus(200);
+                }
+            })
+        }
+    })
+})
 
 module.exports = router;

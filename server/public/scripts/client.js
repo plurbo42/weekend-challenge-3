@@ -10,6 +10,7 @@ function onReady() {
     $('#newTaskButton').on('click', addTask);
     $('#showNewTask').on('click', showNewTask);
     $('#todoList').on('click', '.markComplete', markComplete);
+    $('#todoList').on('click', '.deleteButton', deleteTask);
 };
 
 function getList() {
@@ -65,9 +66,10 @@ function appendList(array) {
     $('#todoList').empty();
     for (var i = 0; i < array.length; i++) {
         var currentItem = array[i];
-        //create data row
+        //create data row and add data
         var $todoLine = $('<tr class=todoRow></tr>');
         $todoLine.data('id', currentItem.itemid);
+        $todoLine.data('iscomplete', currentItem.iscomplete);
 
         //append info to row
         var $todoDetail = $('<td class=detail>' + currentItem.detail + '</td>');
@@ -89,20 +91,16 @@ function appendList(array) {
         if (currentItem.iscomplete == false) {
             var $todoIsComplete = $('<td class=iscomplete><button class="markComplete">Mark Complete</button></td>');
         } else {
-            var $todoIsComplete = $('<td class=iscomplete></td>')
+            var $todoIsComplete = $('<td class=iscomplete>Yes</td>');
         }
-        $todoIsComplete.data('id', currentItem.itemid);
-        $todoIsComplete.data('iscomplete', currentItem.iscomplete);
         $($todoLine).append($todoIsComplete);
-
+        
         var $todoDelete = $('<td class=deleteTask><button class="deleteButton">Delete</button></td>');
         $($todoLine).append($todoDelete);
-
+        
         //append row to DOM
         $('#todoList').append($todoLine);
-
     }
-
 };
 
 function showNewTask() {
@@ -111,13 +109,28 @@ function showNewTask() {
 };
 
 function markComplete() {
-    var completeId = $(this).parent().data().id;
+    var completeId = $(this).parent().parent().data().id;
     console.log('in markComplete for id ', completeId);
     $.ajax({
         method: 'PUT',
         url: '/todo/' + completeId,
         success: function (response) {
             console.log('successful mark complete');
+            getList();
+            getCountIncomplete();
+        }
+    })
+};
+
+function deleteTask() {
+    var deleteId = $(this).parent().parent().data().id;
+    console.log('in delete task', deleteId);
+    confirm('Are you sure you want to delete this task?')
+    $.ajax({
+        method: 'DELETE',
+        url: '/todo/' + deleteId,
+        success: function (response) {
+            console.log('successful delete')
             getList();
             getCountIncomplete();
         }

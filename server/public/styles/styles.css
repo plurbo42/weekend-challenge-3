@@ -31,11 +31,10 @@ td {
     padding: 3px;
 }
 
+.iscomplete, .deleteTask {
+    text-align: center;
+}
 
-/* #showNewTask {
-    width: 0; 
-    height: 0; 
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-    border-top: 20px solid #9b1c1c; 
-  } */
+button {
+    border: none;
+}

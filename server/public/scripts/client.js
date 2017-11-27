@@ -66,10 +66,11 @@ function appendList(array) {
     $('#todoList').empty();
     for (var i = 0; i < array.length; i++) {
         var currentItem = array[i];
-        //create data row and add data
+        //create table row and add data
         var $todoLine = $('<tr class=todoRow></tr>');
         $todoLine.data('id', currentItem.itemid);
         $todoLine.data('iscomplete', currentItem.iscomplete);
+        $todoLine.data('isoverdue', currentItem.isoverdue);
 
         //append info to row
         var $todoDetail = $('<td class=detail>' + currentItem.detail + '</td>');
@@ -84,7 +85,11 @@ function appendList(array) {
         var $todoStartdate = $('<td class=startdate>' + currentItem.startdate + '</td>');
         $($todoLine).append($todoStartdate);
 
+        //mark overdue due dates
         var $todoDueDate = $('<td class=duedate>' + currentItem.duedate + '</td>');
+        if(currentItem.isoverdue == true && currentItem.iscomplete ==false){
+            $($todoDueDate).css('background-color', 'red');
+        }
         $($todoLine).append($todoDueDate);
 
         //add mark complete button to incomplete tasks
@@ -92,14 +97,17 @@ function appendList(array) {
             var $todoIsComplete = $('<td class=iscomplete><button class="markComplete">Mark Complete</button></td>');
         } else {
             var $todoIsComplete = $('<td class=iscomplete>Yes</td>');
+            $($todoIsComplete).css('background-color', 'green');
         }
         $($todoLine).append($todoIsComplete);
-        
+
+        //add delete button to tasks
         var $todoDelete = $('<td class=deleteTask><button class="deleteButton">Delete</button></td>');
         $($todoLine).append($todoDelete);
-        
+
         //append row to DOM
         $('#todoList').append($todoLine);
+
     }
 };
 
@@ -125,7 +133,6 @@ function markComplete() {
 function deleteTask() {
     var deleteId = $(this).parent().parent().data().id;
     console.log('in delete task', deleteId);
-    confirm('Are you sure you want to delete this task?')
     $.ajax({
         method: 'DELETE',
         url: '/todo/' + deleteId,
